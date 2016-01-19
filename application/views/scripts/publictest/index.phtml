@@ -1,0 +1,140 @@
+<div id="content" class="span12">
+    <h2>Test <?php echo $this->escape($this->sessionTest->getTest()->getName()); ?> pro uchazeče <?php echo $this->escape($this->sessionTest->getApplicant()->getFirstName()); ?> <?php echo $this->escape($this->sessionTest->getApplicant()->getLastName()); ?></h2>
+    <div class="">
+        <div class="clearfix"></div>
+        <form id="test-form" class="form-horizontal form-label-left" enctype="application/x-www-form-urlencoded" method="post" action="<?php
+                    echo $this->url(array(
+                        'controller' => 'publictest',
+                        'action' => 'save',
+                        'id' => $this->sessionTest->getHash()), 'default', true);
+                    ?>">
+
+            <?php
+            foreach ($this->sessionTest->getSessionQuestions() as $sessionQuestion) {
+                ?>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2><?php echo $this->escape($sessionQuestion->getQuestion()->getText()); ?></h2>
+                            <div class="clearfix"></div>
+                        </div>
+                        <!-- Content -->
+                        <div class="x_content">
+                            <?php
+                            switch ($sessionQuestion->getQuestion()->getType()) {
+                                case "CodeMultipleChoice":
+                                    ?>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <pre><code id="code-holder" class="language-<?php echo $this->escape($sessionQuestion->getQuestion()->getLanguage()); ?>"><?php echo $this->escape($sessionQuestion->getQuestion()->getCode()); ?></code></pre>
+                            </div>
+                            <?php
+                                case "MultipleChoice":
+                                    foreach ($sessionQuestion->getQuestion()->getAnswers() as $answer) {
+                                    $checked = false;
+                                    foreach ($sessionQuestion->getSessionAnswers() as $sessionAnswer) {
+                                        if($sessionAnswer->getAnswer()->getId() == $answer->getId()){
+                                            $checked = true;
+                                        }
+                                    }
+                                        ?>
+
+                                        <div class="col-md-12 col-sm-12 col-xs-12 answer_holder">
+                                            <div class="col-sm-12">
+                                                <div class="input-group">
+                                                    <span class="input-group-btn" style="">  <span class="input-group-btn" style="">
+                                                            <input <?php echo $checked?"checked='checked'":""; ?> id="answer<?php echo $answer->getId(); ?>" type="checkbox" class="answer-checkbox" name="question<?php echo $sessionQuestion->getId(); ?>[]" value="<?php echo $answer->getId(); ?>" style="width:20px;margin:10px"></span>                                                                                    </span>
+                                                    <label class="answer" for="answer<?php echo $answer->getId(); ?>"><?php echo $this->escape($answer->getText()); ?></label>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <?php
+                                    }
+                                    break;
+                                case "Text":
+                                    ?>
+                                    <div class="form-group code-only">
+                                        <div class="col-md-12 col-sm-12 col-xs-12">
+                                            <textarea class="col-md-12 col-sm-12 col-xs-12 form-control input" id="code" name="question<?php echo $sessionQuestion->getId(); ?>"><?php echo $this->escape($sessionQuestion->getAnswer()); ?></textarea>
+                                        </div>       
+                                    </div>
+                                    <?php
+                                    break;
+                                case "CodeText":
+                                    ?>
+                                                <div class="col-md-12 col-sm-12 col-xs-12 answer_holder">
+                                        <?php if (strlen($sessionQuestion->getQuestion()->getCode()) > 0) { ?>
+                                                    <div class="col-md-12 col-sm-12 col-xs-12">   
+                                                        <div class="col-md-12 col-sm-12 col-xs-12">
+                                                                Original code:
+                                                                <pre><code id="code-holder" class="language-<?php echo $this->escape($sessionQuestion->getQuestion()->getLanguage()); ?>"><?php echo $this->escape($sessionQuestion->getQuestion()->getCode()); ?></code></pre>
+                                                            </div>    
+                                                    </div>
+                                        <?php } ?>
+                                                        <div class="col-md-12 col-sm-12 col-xs-12 question-code-parent">
+                                                               <div class="col-md-6 col-sm-6 col-xs-12">
+                                                                   Response:
+                                                                    <textarea class="col-md-12 col-xs-12 col-s-12 form-control input question-code" name="question<?php echo $sessionQuestion->getId(); ?>"><?php echo $this->escape($sessionQuestion->getAnswer()); ?></textarea>
+                                                                </div>  
+                                                                <div class="col-md-6 col-sm-6 col-xs-12">
+                                                                    Response highlighted:
+                                                                     <pre><code id="code-holder" class="language-<?php echo $this->escape($sessionQuestion->getQuestion()->getLanguage()); ?>"></code></pre>
+                                                                </div>  
+                                                        </div>
+                                                    </div>
+                                    <?php
+                                    break;
+                            }
+                            ?>
+           
+                          
+                            
+                    </div>
+                </div>
+            </div>
+            <!-- /block -->
+
+            <?php } ?>
+        
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <!-- Content -->
+                <div class="x_content">
+                    <input type="submit" class="btn btn-primary submit" value="Odevzdat test" id="submit" name="submit">
+                </div>
+            </div>
+        </div>
+    </form>
+        
+                <div class="clearfix"></div>
+    </div>
+</div>
+<style>
+    label.answer{margin:3px;}
+    input.answer-checkbox{margin:3px !important;}
+</style>
+<script>
+    $('.question-code').keyup(function () {
+        console.log($(this).closest(".question-code-parent"));
+        var code = $($(this).closest(".question-code-parent").find("pre>code"));
+        code.text($(this).val());
+        //$('#code-holder').text($(this).val());
+        Prism.highlightElement(code[0]);
+    });
+    function saveTest() {
+        $.ajax({
+            url: "<?php
+                    echo $this->url(array(
+                        'controller' => 'publictest',
+                        'action' => 'save',
+                        'id' => $this->sessionTest->getHash(),
+                        'temp' => true), 'default', true);
+                    ?>",
+            type:"post",
+            data:$('#test-form').serialize()
+        });
+    }
+    $(document).ready(function () {
+        setInterval(saveTest, 10000);
+    });
+    </script>

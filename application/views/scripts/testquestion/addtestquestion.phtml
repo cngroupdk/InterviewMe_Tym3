@@ -1,0 +1,263 @@
+<div class="span12" id="content">
+
+    <div class="">
+        <div class="clearfix"></div>
+
+        <div class="col-md-6 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2><?php echo isset($this->question) ? "Edit" : "Add"; ?> question for <?php echo $this->escape($this->test->getName()); ?></h2>
+                    <div class="clearfix"></div>
+                </div>
+                <!-- Content -->
+                <div class="x_content">
+                    <form id="add-question-form" action="<?php
+                    echo $this->url(array(
+                        'controller' => 'testquestion',
+                        'action' => 'addtestquestionsave', 
+                       'id' => $this->testId,
+                        'question_id' => isset($this->question) ? $this->question->getId() : ""), 'default', true);
+                    ?>" method="post" enctype="application/x-www-form-urlencoded" class="form-horizontal form-label-left">
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12 required" for="name">Name</label>
+                            <div class="col-md-7 col-sm-7">
+                                <input type="text" class="col-md-7 col-xs-1 form-control input" value="<?php echo isset($this->question) ? $this->escape($this->question->getName()) : ""; ?>" id="name" name="name"></div></div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12 required" for="text">Question</label>
+                            <div class="col-md-7 col-sm-7">
+                                <input type="text" class="col-md-7 col-xs-1 form-control input" value="<?php echo isset($this->question) ? $this->escape($this->question->getText()) : ""; ?>" id="question" name="text"></div></div>
+
+
+                        <div class="form-group"><label class="control-label col-md-3 col-sm-3 col-xs-12 required" for="question_type">Type</label>
+                            <div class="col-md-7 col-sm-7">
+                                <select class="col-md-7 col-xs-1 form-control input" id="question_type" name="question_type">
+                                    <option <?php echo !isset($this->question)?'selected="selected"':''; ?> value="">Select a question type...</option>
+                                    <?php
+                                    foreach ($this->questionTypes as $questionType) {
+                                        ?>
+                                        <option value="<?php echo $questionType['value']; ?>" 
+                                                data-has-answers="<?php echo array_key_exists("predefinedAnswers",$questionType)?$questionType['predefinedAnswers']:""; ?>"
+                                                data-has-code="<?php echo array_key_exists("hasCode",$questionType)?$questionType['hasCode']:""; ?>"
+                                                <?php echo isset($this->question) && $this->question->getType() == $questionType['value'] ? "selected" : ""; ?> ><?php echo $questionType['label']; ?></option>
+                                                <?php
+                                            }
+                                            ?>
+                                </select></div></div>
+                        <div class="form-group code-only" style="display:none">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12 required" for="language">Language</label>
+                            <div class="col-md-7 col-sm-7">
+                                <select class="col-md-7 col-sm-7 form-control input" id="language" name="language">
+                                    <option <?php echo !isset($this->question)?'selected="selected"':''; ?> value="">Select a language...</option>
+                                    <?php
+                                    foreach ($this->languagesTypes as $languagesType) {
+                                        ?>
+                                        <option value="<?php echo $languagesType['value']; ?>" 
+                                                <?php echo isset($this->question) && $this->question->getLanguage() == $languagesType['value'] ? "selected" : ""; ?> >
+                                                    <?php echo $languagesType['label']; ?>
+                                        </option>
+                                        <?php
+                                    }
+                                    ?>
+                                </select></div></div>
+                        <div class="form-group code-only" style="display:none">
+                            <label class="control-label col-md-3 col-sm-3 col-xs-12 required" for="language">Code</label>
+                            <div class="col-md-7 col-sm-7">
+                                <textarea class="col-md-7 col-xs-1 form-control input question-code" id="code" name="code"><?php echo isset($this->question) ? $this->escape($this->question->getCode()) : ""; ?></textarea></div></div>
+
+                        <div class="form-group" id="answer_group" style="display:none">
+                            <div class="col-sm-12 add-answer-group">
+                                <label class="col-sm-3 control-label"></label>
+                                <div class="col-md-7 col-sm-7">
+                                    <button class="btn btn-success add-answer" type="button"><i class="fa fa-plus"></i> Add answer</button> 
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" >
+                            <div class="col-sm-12">
+                                <input type="submit" class="btn btn-primary submit" value="<?php echo isset($this->question) ? "Edit" : "Add"; ?> question" id="submit" name="submit">
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+
+        <div class="col-md-6 col-sm-12 col-xs-12 code-only" style="display:none">
+            <div class="x_panel">
+                <div class="x_title">
+                    <h2>Code preview</h2>
+                    <div class="clearfix"></div>
+                </div>
+                <!-- Content -->
+                <div class="x_content">
+                    <pre><code id="code-holder"></code></pre>
+                </div>
+            </div>
+        </div>
+        
+        <?php if (isset($this->question)) { ?>
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2>Question editing</h2>
+                            <div class="clearfix"></div>
+                        </div>
+                        <!-- Content -->
+                        <div class="x_content">
+                            <p>Please note that you are editing the question only for new applicants. Applicants that already took the test or started it will have the old question</p>
+                        </div>
+                    </div>
+                </div>
+        <?php } ?>
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+
+<script>
+    function addAnswer(text, isCorrect) {
+        var answerHolderClone = $($("#templates .answer_holder")[0]).clone();
+
+        if (text) {
+            answerHolderClone.find(".answer-text").val(text);
+        }
+        if (isCorrect) {
+            answerHolderClone.find(".answer-checkbox").prop('checked', isCorrect);
+        }
+        $("#answer_group .add-answer-group").before(answerHolderClone);
+        recalculateIndexes();
+    }
+    function recalculateIndexes() {
+
+        var itemsCheckbox = $("#answer_group .answer-checkbox");
+        var itemsTexts = $("#answer_group .answer-text");
+        for (var i = 0; i < itemsCheckbox.length; i++) {
+            $(itemsCheckbox[i]).attr("name", "answer_selected[" + i + "]")
+            $(itemsTexts[i]).attr("name", "answer_text[" + i + "]")
+        }
+    }
+    $('#question_type').change(function () {
+        if ($(this).find("option:selected").attr("data-has-answers") == "1") {
+            $("#answer_group").show();
+            while ($("#answer_group .answer_holder").length < 3) {
+                addAnswer();
+            }
+        } else {
+            $("#answer_group").hide();
+        }
+
+        if ($(this).find("option:selected").attr("data-has-code") == "1") {
+            $(".code-only").show();
+        } else {
+            $(".code-only").hide();
+        }
+    });
+    $('#code').keyup(function () {
+        $('#code-holder').text($(this).val());
+        Prism.highlightElement($("#code-holder")[0]);
+    })
+    $('#language').change(function () {
+        $('#code-holder').closest("pre").removeClass().addClass("language-" + $(this).val());
+        $('#code-holder').removeClass().addClass("language-" + $(this).val());
+        Prism.highlightElement($("#code-holder")[0]);
+    })
+    $(document).ready(function () {
+        var answers = <?php echo json_encode(isset($this->answers) ? $this->answers : array()) ?>;
+        var showCode = <?php
+        $showCode = false;
+        foreach ($this->questionTypes as $questionType) {
+            if (isset($this->question) && $this->question->getType() == $questionType['value']) {
+                $showCode = isset($questionType['hasCode']) && $questionType['hasCode'] == "1";
+            }
+        }
+        echo json_encode($showCode)
+        ?>;
+        if (showCode) {
+            $(".code-only").show();
+
+        } else {
+
+            $(".code-only").hide();
+        }
+        $('#language').change();
+        $('#code').keyup();
+        if (answers.length == 0) {
+            return;
+        }
+        for (var i in answers) {
+            addAnswer(answers[i].text, answers[i].is_correct == 1);
+        }
+        $("#answer_group").show();
+    });
+    function showError(text){
+        var error = $("#templates div.alert").clone();
+        error.find(".message").text(text);
+        $("#add-question-form").before(error);    
+    }
+    
+    function verifyForm(){
+        $(".x_content .alert").remove();
+        if($('#name').val().length < 1){
+            showError("Name cannot be empty");
+            return false;
+        }
+        if($('#question').val().length < 1){
+            showError("Question cannot be empty");
+            return false;
+        }
+        var type = $('#question_type').find("option:selected");
+        if(type.val().length < 1){
+            showError("Cannot save question without type");
+            return false;
+        }
+        if(type.attr("data-has-answers")){
+            var answers = $("#answer_group .answer-text");
+            var count = 0;
+            for(var i = 0; i<answers.length; i++){
+                if($(answers[i]).val().length >= 1){
+                    count++;
+                }
+            }
+            if(count<2){
+                showError("You have to specify at least 2 answers with non-empty text");
+            return false;
+            }
+        }
+        if(type.attr("data-has-code")&&$('#language').val().length < 1){
+            showError("You have to select a language");
+            return false;
+        }
+        return true;
+    }
+    $("#add-question-form").submit(verifyForm);
+    $(document).on("click", ".delete-answer", function () {
+        $($(this).closest(".answer_holder")).remove();
+        recalculateIndexes();
+    });
+    $(document).on("click", ".add-answer", function () {
+        addAnswer();
+    });
+</script>
+
+<div style="display:none" id="templates">
+    <div class="col-sm-12 answer_holder">
+        <label class="col-sm-3 control-label">Odpověď</label>
+        <div class="col-sm-7">
+            <div class="input-group">
+                <span class="input-group-btn" style="">  <span class="input-group-btn" style="">
+                        <input type="checkbox" class="answer-checkbox" name="answer_selected[]" style="width:20px;margin:10px"></span>                                                                                    </span>
+                <input type="text" class="form-control answer-text" name="answer_text[]">
+                <span class="input-group-btn">
+                    <button class="btn btn-danger delete-answer" type="button"><i class="fa fa-trash"></i></button> 
+                </span>
+            </div>
+        </div>
+    </div>
+    <div role="alert" class="alert alert-error alert-dismissible fade in"><button aria-label="Close" data-dismiss="alert" class="close" type="button">
+    				<span aria-hidden="true">×</span>
+					</button><strong></strong><div class="message">Your changes have been saved!</div></div>
+</div>

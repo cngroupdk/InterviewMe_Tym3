@@ -1,0 +1,283 @@
+<div id="content" class="span12">
+    
+                     <?php 
+            if($this->sessionTest->getStatus() != "Submitted"&&$this->sessionTest->getStatus() != "Reviewed"){
+                ?>
+                    <div role="alert" class="alert alert-warning alert-dismissible fade in">
+                        <strong>Test is not finished!</strong> Please wait before processing. Refresh for update
+                    </div>
+                    <?php
+            }else{
+            ?>
+                    
+                    <div role="alert" class="alert alert-success alert-dismissible fade in">
+                        <strong>Test was finished</strong>
+                    </div>
+                     <?php }
+            ?>
+    <h2><?php echo $this->escape($this->sessionTest->getApplicant()->getFirstName()); ?> <?php echo $this->escape($this->sessionTest->getApplicant()->getLastName()); ?>'s test '<?php echo $this->escape($this->sessionTest->getTest()->getName()); ?>' result  (last modified <?php echo $this->sessionTest->getLastModifiedAt() ?>)</h2>
+    <div class="">
+        <div class="clearfix"></div>
+        <form id="test-form" class="form-horizontal form-label-left" enctype="application/x-www-form-urlencoded" method="post" action="<?php
+        echo $this->url(array(
+            'controller' => 'publictest',
+            'action' => 'save',
+            'id' => $this->sessionTest->getHash()), 'default', true);
+        ?>">
+
+            <?php
+            foreach ($this->sessionTest->getSessionQuestions() as $sessionQuestion) {
+                ?>
+                <div class="col-md-12 col-sm-12 col-xs-12 question-node">
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h2><?php echo $this->escape($sessionQuestion->getQuestion()->getText()); ?></h2>
+                            <div class="clearfix"></div>
+                        </div>
+                        <!-- Content -->
+                                       
+                <div class="col-md-1 col-sm-2 col-xs-12">
+                    <div class="display-on-evaluate">
+                        
+                        <div style="text-align:center">
+                              <?php
+                               if($sessionQuestion->getScore()!=null){
+                                          ?>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                         <?php if($sessionQuestion->getScore()==0){ ?>  
+                        
+                            <i class="fa fa-times" style="color:red;font-size:60px;"></i><br />
+                            <span style="color:red;font-size:15px;">Incorrect</span>
+                       
+                        <?php }else{ ?> 
+                            <i class="fa fa-check" style="color:green;font-size:60px;"></i> <br />
+                            <span style="color:green;font-size:15px;">Correct</span>
+                       
+                        <?php } ?>
+                            </div>
+                        <?php   } 
+                                switch ($sessionQuestion->getQuestion()->getType()) {
+                                    case "Text":
+                                    case "CodeText":
+                                        ?>
+                           
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <input type="radio" id="correct-1-<?php echo $sessionQuestion->getId(); ?>" name="correct<?php echo $sessionQuestion->getId(); ?>" value="1"
+                                       <?php echo $sessionQuestion->getScore()!=null?($sessionQuestion->getScore()==1?"checked='checked'":""):""; ?>/> 
+                                <label style="color:green;font-size:15px;" for="correct-1-<?php echo $sessionQuestion->getId(); ?>">Correct</label>
+                           </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <input type="radio" id="correct-0-<?php echo $sessionQuestion->getId(); ?>" name="correct<?php echo $sessionQuestion->getId(); ?>" value="0" 
+                                    <?php echo $sessionQuestion->getScore()!=null?($sessionQuestion->getScore()==0?"checked='checked'":""):""; ?> /> 
+                                <label style="color:red;font-size:15px;" for="correct-0-<?php echo $sessionQuestion->getId(); ?>">Incorrect</label>
+                           </div>
+                         <?php  break; } ?>
+                       
+                        </div>
+                    </div>
+                    <button style="font-size:60px;text-align:center" class="hide-on-evaluate col-md-12 col-sm-12 col-xs-12" onclick="$(this).closest('.question-node').find('.display-on-evaluate').fadeIn();$(this).closest('.question-node').find('.hide-on-evaluate').hide();return false;">
+                    <i class="fa fa-question-circle"></i>
+
+                    </button>
+                </div>
+                        <div class="col-md-11 col-sm-10 col-xs-12">
+                            <div class="x_content">
+                                <?php
+                                switch ($sessionQuestion->getQuestion()->getType()) {
+                                    case "CodeMultipleChoice":
+                                        ?>
+                                
+                                        <div class="col-md-12 col-xs-12 col-s-12">
+                                            <pre><code id="code-holder" class="language-<?php echo $this->escape($sessionQuestion->getQuestion()->getLanguage()); ?>"><?php echo $this->escape($sessionQuestion->getQuestion()->getCode()); ?></code></pre>
+                                        </div>
+                                <?php
+                                    case "MultipleChoice":
+                                        ?>
+
+                                        <div class="display-on-evaluate">
+                                            <?php
+                                            foreach ($sessionQuestion->getQuestion()->getAnswers() as $answer) {
+                                                ?>
+
+                                                <div class="col-md-12 col-sm-12 col-xs-12 answer_holder">
+                                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="input-group" style="margin-bottom:0px;">
+                                                            <span class="input-group-btn" style="">  <span class="input-group-btn" style="">
+                                                                    <input id="answer<?php echo $answer->getId(); ?>" 
+                                                                           type="checkbox" class="answer-checkbox" name="question<?php echo $sessionQuestion->getId(); ?>[]" 
+                                                                           value="<?php echo $answer->getId(); ?>"   
+                                                                           <?php
+                                                                           foreach ($sessionQuestion->getSessionAnswers() as $selected) {
+                                                                               if ($selected->getAnswer()->getId() == $answer->getId()) {
+                                                                                   echo 'checked';
+                                                                               }
+                                                                           }
+                                                                           ?>                              		
+                                                                           style="width:15px;">      
+                                                                </span></span>
+                                                            <label class="answer" 
+                                                            <?php
+                                                            foreach ($sessionQuestion->getQuestion()->getAnswers() as $forAnswer) {
+                                                                if ($forAnswer->getId() != $answer->getId()) {
+                                                                    continue;
+                                                                }
+                                                                $answeredSelected = false;
+                                                                foreach ($sessionQuestion->getSessionAnswers() as $sessonAnswer) {
+                                                                    if ($sessonAnswer->getAnswer()->getId() == $answer->getId()) {
+                                                                        $answeredSelected = true;
+                                                                        break;
+                                                                    }
+                                                                }
+                                                                if ($answer->getIsCorrect() && $answeredSelected) {
+                                                                    echo 'style="color:green"';
+                                                                } elseif ((!$answer->getIsCorrect() && $answeredSelected)||($answer->getIsCorrect() && !$answeredSelected)) {
+                                                                    echo 'style="color:red"';
+                                                                }
+                                                            }
+                                                            ?>
+                                                                   for="answer<?php echo $answer->getId(); ?>">
+                                                                       <?php echo $answer->getIsCorrect()?'<i class="fa fa-check-square-o"></i>':'<i class="fa fa-square-o"></i>'; ?>
+                                                                       <?php echo $this->escape($answer->getText()); ?>
+                                                                
+                                                            
+
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <?php }
+                                            ?>
+                                        </div>
+                                        <div class="hide-on-evaluate">
+                                            <?php
+                                            foreach ($sessionQuestion->getQuestion()->getAnswers() as $answer) {
+                                                ?>
+
+                                                <div class="col-md-12 col-sm-12 col-xs-12 answer_holder">
+                                                    <div class="col-md-12 col-sm-12 col-xs-12">
+                                                        <div class="input-group" style="margin-bottom:0px;">
+                                                            <span class="input-group-btn" style="">  <span class="input-group-btn" style="">
+                                                                    <input id="answer<?php echo $answer->getId(); ?>" 
+                                                                           type="checkbox" class="answer-checkbox" disabled="disabled" name="question
+                                                                           <?php echo $sessionQuestion->getId(); ?>[]" 
+                                                                           value="<?php echo $answer->getId(); ?>"   
+                                                                           <?php
+                                                                           foreach ($sessionQuestion->getSessionAnswers() as $selected) {
+                                                                               if ($selected->getAnswer()->getId() == $answer->getId()) {
+                                                                                   echo 'checked';
+                                                                               }
+                                                                           }
+                                                                           ?>                              		
+                                                                           style="width:15px;margin:10px">      
+                                                                </span></span>
+                                                            <label class="answer" for="answer<?php echo $answer->getId(); ?>"><?php echo $this->escape($answer->getText()); ?></label>
+                                                        </div>
+                                                    </div>
+
+
+
+                                                </div>
+                                                <?php }
+                                            ?>
+                                        </div>
+                                        <?php
+                                        break;
+                                    case "Text":
+                                        ?>
+                                        <div class="form-group code-only">
+                                            <div class="col-md-12 col-xs-12 col-s-12">
+                                                <textarea class="col-md-12 col-xs-12 col-s-12 form-control input" id="code" name="question<?php echo $sessionQuestion->getId(); ?>"><?php echo isset($this->question) ? $this->escape($this->question->getCode()) : ""; 
+                                                ?><?php echo $sessionQuestion->getAnswer(); ?></textarea>
+                                            </div>       
+                                        </div>
+                                        <?php
+                                        break;
+                                   
+                                    case "CodeText":
+                                        ?>
+                                                            <div class="col-md-12 col-xs-12 col-s-12 answer_holder">
+                                            <?php if (strlen($sessionQuestion->getQuestion()->getCode()) > 0) { ?>
+                                                                            <div class="col-md-12 col-xs-12 col-s-12"> <div class="col-md-12 col-xs-12 col-s-12">
+                                                                                      Original code:
+                                                                                <pre><code id="code-holder" class="language-<?php echo $this->escape($sessionQuestion->getQuestion()->getLanguage()); ?>"><?php echo $this->escape($sessionQuestion->getQuestion()->getCode()); ?></code></pre>
+                                                                            </div></div>
+                                            <?php } ?>
+                                                                    <div class="col-md-12 col-xs-12 col-s-12 question-code-parent">
+                                                                           <div class="col-md-6 col-s-6 col-xs-12 ">
+                                                                                Response:
+                                                                                <textarea class="col-md-12 col-xs-12 col-s-12 form-control input question-code" name="question<?php echo $sessionQuestion->getId(); ?>"><?php echo $this->escape($sessionQuestion->getAnswer()); ?></textarea>
+                                                                            </div>  
+                                                                            <div class="col-md-6 col-s-6 col-xs-12 ">
+                                                                                 Response highlighted:
+                                                                                 <pre><code id="code-holder" class="language-<?php echo $this->escape($sessionQuestion->getQuestion()->getLanguage()); ?>"><?php echo $this->escape($sessionQuestion->getAnswer()); ?></code></pre>
+                                                                            </div>  
+                                                                    </div>
+                                                                </div>
+                                        <?php
+                                        break;
+                                }
+                                ?>
+               
+                              
+                                 <div class="col-md-12 col-xs-12 col-s-12 display-on-evaluate">Additional comments
+                                    <textarea class="col-md-12 col-xs-12 col-s-12" name="note<?php echo $sessionQuestion->getId(); ?>"><?php echo $sessionQuestion->getNote(); ?></textarea>
+                                </div>
+                        </div>
+             
+                       
+                    </div>
+                        
+                </div>
+                </div>
+                <!-- /block -->
+
+            <?php }
+            ?>
+           
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="x_panel">
+                <!-- Content -->
+                <div class="x_content">
+                     <?php 
+            if($this->sessionTest->getStatus() != "Submitted"&&$this->sessionTest->getStatus() != "Reviewed"){
+                ?>
+                    <div role="alert" class="alert alert-warning alert-dismissible fade in">
+                        <strong>Test is not finished!</strong> Please wait before processing.  Refresh for update
+                    </div>
+                    <?php
+            }else{
+            ?>
+                    <input type="submit" class="btn btn-primary submit" value="Save test" id="submit" name="submit">
+                    
+                     <?php }
+            ?>
+                    
+                    <input type="submit" class="btn btn-success submit" value="Reveal all answers" name="reveal" onclick="if(confirm('Are you sure?')){$('.display-on-evaluate').fadeIn();$('.hide-on-evaluate').hide();}return false;">
+                </div>
+            </div>
+        </div>
+               
+    </form>
+        
+                <div class="clearfix"></div>
+    </div>
+</div>
+    </div>
+<style>
+    label.answer{margin:10px;}
+
+    .display-on-evaluate{
+        display:none;
+    }
+                </style>
+                
+                <script>
+    $('.question-code').keyup(function () {
+        console.log($(this).closest(".question-code-parent"));
+        var code = $($(this).closest(".question-code-parent").find("pre>code"));
+        code.text($(this).val());
+        //$('#code-holder').text($(this).val());
+        Prism.highlightElement(code[0]);
+    });
+    
+    </script>

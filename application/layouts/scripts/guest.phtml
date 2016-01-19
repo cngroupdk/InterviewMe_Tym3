@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html class="no-js">
+    
+    <head>
+        <title>Guest</title>
+        <!-- Bootstrap -->
+        <?php echo $this->headLink()->appendStylesheet($this->baseUrl() . '/bootstrap/css/bootstrap.min.css'); ?>
+        <?php echo $this->headLink()->appendStylesheet($this->baseUrl() . '/bootstrap/css/bootstrap-responsive.min.css'); ?>
+        <?php echo $this->headLink()->appendStylesheet($this->baseUrl() . '/vendors/easypiechart/jquery.easy-pie-chart.css'); ?>
+        <?php echo $this->headLink()->appendStylesheet($this->baseUrl() . '/assets/styles.css'); ?>
+        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <?php echo $this->headScript()->appendFile($this->baseUrl() . '/vendors/modernizr-2.6.2-respond-1.1.0.min.js'); ?>
+    </head>
+    
+    <body>
+        
+        <div class="container-fluid">
+            <div class="row-fluid">
+                
+                <?php echo $this->layout()->content ?>
+                <!--/span-->
+            </div>
+            <hr>
+            <footer>
+                <p>&copy; 2015 Tým 3 | Interview.me</p>
+            </footer>
+        </div>
+        <!--/.fluid-container-->
+        <?php echo $this->headScript()->appendFile($this->baseUrl() . '/vendors/jquery-1.9.1.min.js'); ?>
+        <?php echo $this->headScript()->appendFile($this->baseUrl() . '/bootstrap/js/bootstrap.min.js'); ?>
+        <?php echo $this->headScript()->appendFile($this->baseUrl() . '/vendors/easypiechart/jquery.easy-pie-chart.js'); ?>
+        <?php echo $this->headScript()->appendFile($this->baseUrl() . '/assets/scripts.js'); ?>
+
+    </body>
+
+</html>    

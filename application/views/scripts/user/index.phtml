@@ -1,0 +1,109 @@
+<div class="span12" id="content">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3>Users</h3>
+                <div class="message"><?php echo $this->messages(); ?></div>
+                <br/>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+
+        <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>List of Users</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <table id="users" class="table table-striped responsive-utilities jambo_table">
+                            <thead>
+                                <tr class="headings">
+                                    <th>#</th>
+                                    <th>Username</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Role</th>
+                                    <th>Last Login</th>
+                                    <th class=" no-link last"><span class="nobr">Action</span>
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <?php
+                                foreach ($this->users as $user) {
+                                    ?>
+                                
+                                    <tr>
+                                        <td class=" "><?php echo $this->escape($user->getId()); ?></td>
+                                        <td class=" "><?php echo $this->escape($user->getUsername()); ?></td>
+                                        <td class=" "><?php echo $this->escape($user->getFirstName()); ?></td>
+                                        <td class=" "><?php echo $this->escape($user->getLastName()); ?></td>
+                                        <td class=" "><?php echo $this->escape($user->getRole()); ?></td>
+                                        <td class=" "><?php echo $this->escape($user->getCreatedAt()); ?></td>
+                                        <td class=" last">
+                                            <a href="<?php
+                                            echo $this->url(array(
+                                                'controller' => 'user',
+                                                'action' => 'detail',
+                                                'id' => $user->getId()), 'default', true)
+                                            ?>" class="btn btn-primary btn-xs" style="margin: 0px;"><i class="fa fa-info"></i>&nbsp;&nbsp;Detail</a>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <br />
+            <br />
+            <br />
+
+        </div>
+    </div>
+</div>
+<!-- /page content -->
+
+<script>
+    $(document).ready(function () {
+        var oTable = $('#users').dataTable({
+            "aaSorting": [[0, 'desc']],
+            "oLanguage": {
+                "sSearch": "Search all columns:"
+            },
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [6]
+                } //disables sorting for the last column (Action)
+            ],
+            'iDisplayLength': 12,
+            "sPaginationType": "full_numbers",
+        });
+        $("tfoot input").keyup(function () {
+            /* Filter on the column based on the index of this element's parent <th> */
+            oTable.fnFilter(this.value, $("tfoot th").index($(this).parent()));
+        });
+        $("tfoot input").each(function (i) {
+            asInitVals[i] = this.value;
+        });
+        $("tfoot input").focus(function () {
+            if (this.className == "search_init") {
+                this.className = "";
+                this.value = "";
+            }
+        });
+        $("tfoot input").blur(function (i) {
+            if (this.value == "") {
+                this.className = "search_init";
+                this.value = asInitVals[$("tfoot input").index(this)];
+            }
+        });
+    });
+</script>

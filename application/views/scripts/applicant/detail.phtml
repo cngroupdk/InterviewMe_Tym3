@@ -1,0 +1,565 @@
+<div class="span12" id="content">
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3><?php echo $this->escape($this->applicant->getFullName()); ?></h3>
+                <?php if (is_numeric($this->applicant->getLatestTestScore())) { ?>
+                    <h4>Last score: <?php echo $this->formatScore($this->applicant->getLatestTestScore()); ?>&nbsp;%</h4>
+                <?php } ?>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+
+
+                <a
+                    href="<?php
+                    echo $this->url(array(
+                        'controller' => 'applicants'
+                            ), 'default', true)
+                    ?>"
+                    class="btn btn-default"><i class="fa fa-arrow-left"></i>&nbsp;Back</a>
+
+                <a
+                    href="<?php
+                    echo $this->url(array(
+                        'controller' => 'applicant',
+                        'action' => 'edit',
+                        'id' => $this->applicant->getId()
+                            ), 'default', true)
+                    ?>"
+                    class="btn btn-primary"><i class="fa fa-edit "></i>&nbsp;Edit</a>
+                    <?php if (Zend_Registry::get('ACL')->isAllowed(Zend_Registry::get('ROLE'), "applicant", "delete")) { ?>
+                    <form
+                        style="margin: 0; padding: 0; display: inline;"
+                        action="<?php
+                        echo $this->url(array(
+                            'controller' => 'applicant',
+                            'action' => 'delete',
+                            'id' => $this->applicant->getId()
+                                ), 'default', true)
+                        ?>"
+                        method="post">
+                        <button type="submit" class="btn btn-danger"
+                                onclick="return confirm('Do you really want to delete this applicant?')">
+                            <i class="fa fa-remove" title="Delete"></i>&nbsp;Delete
+                        </button>
+                    </form>
+
+                <?php } ?>
+            </div>
+        </div>
+        <br />
+
+
+        <div class="row">
+            <div class="col-md-6 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Basic Information</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+
+                        <div class="form-horizontal">
+
+                            <div class="form-group">
+                                <label class="col-md-3 col-sm-3 col-xs-12">First Name</label>
+                                <div class="col-md-9 col-sm-9 col-xs-12"><?php echo $this->escape($this->applicant->getFirstName()); ?></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 col-sm-3 col-xs-12">Last Name</label>
+                                <div class="col-md-9 col-sm-9 col-xs-12"><?php echo $this->escape($this->applicant->getLastName()); ?></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 col-sm-3 col-xs-12">Birth Date</label>
+                                <div class="col-md-9 col-sm-9 col-xs-12"><?php echo $this->escape($this->applicant->getBirthDate()); ?></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 col-sm-3 col-xs-12">Seniority</label>
+                                <div class="col-md-9 col-sm-9 col-xs-12"><?php echo $this->escape($this->applicant->getSeniority()); ?></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 col-sm-3 col-xs-12">Technology</label>
+                                <div class="col-md-9 col-sm-9 col-xs-12"><?php echo $this->escape($this->applicant->getTechnology()); ?></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 col-sm-3 col-xs-12">Position</label>
+                                <div class="col-md-9 col-sm-9 col-xs-12"><?php echo $this->escape($this->applicant->getPosition()); ?></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 col-sm-3 col-xs-12">Note</label>
+                                <div class="col-md-9 col-sm-9 col-xs-12"><?php echo $this->escape($this->applicant->getNote()); ?></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 col-sm-3 col-xs-12">Created At</label>
+                                <div class="col-md-9 col-sm-9 col-xs-12"><?php echo $this->escape($this->applicant->getCreatedAt()); ?></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 col-sm-3 col-xs-12">Last Modified At</label>
+                                <div class="col-md-9 col-sm-9 col-xs-12"><?php echo $this->escape($this->applicant->getLastModifiedAt()); ?></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Additional Information</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div class="form-group">
+                            <label class="col-md-3 col-sm-3 col-xs-12">Photo</label>
+                            <div class="col-md-9 col-sm-9 col-xs-12">
+                                <img style="max-height: 200px; width: auto;"
+                                     src="<?php
+                                     echo $this->url(array(
+                                         'controller' => 'applicant',
+                                         'action' => 'photo',
+                                         'id' => $this->applicant->getId()
+                                             ), 'default', true)
+                                     ?>"
+                                     alt="<?php echo $this->applicant->getFullName(); ?>" />
+                            </div>
+                        </div>
+                        <br />
+                        <?php
+                        $files = $this->applicant->getFiles();
+                        if (count($files) > 0) {
+                            ?>
+                            <div class="form-group">
+                                <label class="col-md-3 col-sm-3 col-xs-12">Attachments</label>
+                                <div class="col-md-9 col-sm-9 col-xs-12">
+                                    <ul style="padding-top: 20px;">
+                                        <?php
+                                        foreach ($files as $f) {
+                                            echo '<li><a href="' . $this->url(array(
+                                                'controller' => 'applicant',
+                                                'action' => 'downloadfile',
+                                                'id' => $f->getId()
+                                                    ), 'default', true) . '">' . $f->getName() . '</a></li>';
+                                        }
+                                        ?>
+                                    </ul>
+                                </div>
+                            </div>
+                            <?php
+                        }
+                        ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Advanced information</h2>
+
+                        <div class="clearfix"></div>
+                    </div>
+
+                    <div class="x_content">
+
+
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-12">
+
+                                <div class="form-horizontal">
+
+                                    <div class="form-group">
+                                        <label class="col-md-3 col-sm-3 col-xs-12">Date of Interview
+                                            </label>
+                                        <div class="col-md-9 col-sm-9 col-xs-12"><?php
+                                            $param = $this->applicant->getInterviewedOn();
+                                            echo $this->escape($param == "" ? '-' : $param);
+                                            ?></div>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label class="col-md-3 col-sm-3 col-xs-12">Interviewers:
+                                            </label>
+                                        <div class="col-md-9 col-sm-9 col-xs-12"><?php
+                                        foreach($this->applicant->getInterviewers() as $interviewer){
+                                             echo $this->escape($interviewer->getFirstName()." ".$interviewer->getLastName());?><br /><?php
+                                        }
+                                            ?></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-3 col-sm-3 col-xs-12">Education</label>
+                                        <div class="col-md-9 col-sm-9 col-xs-12"><?php
+                                            $param = $this->applicant->getEducation();
+                                            echo $this->escape($param == "" ? '-' : $param);
+                                            ?></div>
+                                    </div>
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="col-md-3 col-sm-3 col-xs-12">Next Contact Date</label>
+                                            <div class="col-md-9 col-sm-9 col-xs-12"><?php
+                                                $param = $this->applicant->getContactDate();
+                                                echo $this->escape($param == "" ? '-' : $param);
+                                                ?></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <?php if (Zend_Registry::get('ACL')->isAllowed(Zend_Registry::get('ROLE'), "applicant", "editadvancedinfo")) { ?>
+                                    <button type="button" class="btn btn-primary"
+                                            data-toggle="modal" data-target=".bs-example-modal-lg">Open
+                                        advanced information</button>
+                              
+
+
+
+                                <a
+                                    href="<?php
+                                    echo $this->url(array(
+                                        'controller' => 'applicant',
+                                        'action' => 'editadvancedinfo',
+                                        'id' => $this->applicant->getId()
+                                            ), 'default', true)
+                                    ?>"
+                                    class="btn btn-primary"><i class="fa fa-edit "></i>&nbsp;Edit Advanced info</a>
+  <?php } ?>
+
+
+                                <div class="modal fade bs-example-modal-lg" tabindex="-1"
+                                     role="dialog" aria-hidden="true" style="display: none;">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                                <div class="x_title">
+                                                    <h2>Advanced information</h2>
+                                                    <div class="clearfix"></div>
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-6 col-sm-6 col-xs-12">
+
+                                                        <div class="form-horizontal">
+                                                            <div class="form-group">
+                                                                <label class="col-md-3 col-sm-3 col-xs-12">Motivation to
+                                                                    Change</label>
+                                                                <div class="col-md-9 col-sm-9 col-xs-12"><?php
+                                                                    $param = $this->applicant->getMotivation();
+                                                                    echo $this->escape($param == "" ? '-' : $param);
+                                                                    ?></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="col-md-3 col-sm-3 col-xs-12">Kind of Work
+                                                                    Preferred </label>
+                                                                <div class="col-md-9 col-sm-9 col-xs-12"><?php
+                                                                    $param = $this->applicant->getPreferredWork();
+                                                                    echo $this->escape($param == "" ? '-' : $param);
+                                                                    ?></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="col-md-3 col-sm-3 col-xs-12">Ambitions</label>
+                                                                <div class="col-md-9 col-sm-9 col-xs-12"><?php
+                                                                    $param = $this->applicant->getAmbitions();
+                                                                    echo $this->escape($param == "" ? '-' : $param);
+                                                                    ?></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="col-md-3 col-sm-3 col-xs-12">Languages</label>
+                                                                <div class="col-md-9 col-sm-9 col-xs-12"><?php
+                                                                    $param = $this->applicant->getLanguages();
+                                                                    echo $this->escape($param == "" ? '-' : $param);
+                                                                    ?></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="col-md-3 col-sm-3 col-xs-12">Travelling</label>
+                                                                <div class="col-md-9 col-sm-9 col-xs-12"><?php
+                                                                    $param = $this->applicant->getTravelling();
+                                                                    echo $this->escape($param == "" ? '-' : $param);
+                                                                    ?></div>
+                                                            </div>
+                                                            <hr>
+                                                            <div class="form-group">
+                                                                <label class="col-md-3 col-sm-3 col-xs-12">Pluses/Minuses</label>
+                                                                <div class="col-md-9 col-sm-9 col-xs-12"><?php
+                                                                    $param = $this->applicant->getPlusesMinuses();
+                                                                    echo $this->escape($param == "" ? '-' : $param);
+                                                                    ?></div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="col-md-3 col-sm-3 col-xs-12">Team Work
+                                                                    Experience</label>
+                                                                <div class="col-md-9 col-sm-9 col-xs-12"><?php
+                                                                    $param = $this->applicant->getTeamExperience();
+                                                                    echo $this->escape($param == "" ? '-' : $param);
+                                                                    ?></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-md-6 col-sm-6 col-xs-12">
+
+                                                            <div class="form-horizontal">
+
+                                                                <div class="form-group">
+                                                                    <label class="col-md-3 col-sm-3 col-xs-12">Domain/Areas
+                                                                        of Work</label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12"><?php
+                                                                        $param = $this->applicant->getDomain();
+                                                                        echo $this->escape($param == "" ? '-' : $param);
+                                                                        ?></div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-3 col-sm-3 col-xs-12">Skills and
+                                                                        Technologies Know-How</label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12"><?php
+                                                                        $param = $this->applicant->getKnowhow();
+                                                                        echo $this->escape($param == "" ? '-' : $param);
+                                                                        ?></div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-3 col-sm-3 col-xs-12">Other
+                                                                        Information</label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12"><?php
+                                                                        $param = $this->applicant->getOther();
+                                                                        echo $this->escape($param == "" ? '-' : $param);
+                                                                        ?></div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-3 col-sm-3 col-xs-12">Summary of
+                                                                        the Interview</label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12"><?php
+                                                                        $param = $this->applicant->getSummary();
+                                                                        echo $this->escape($param == "" ? '-' : $param);
+                                                                        ?></div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-3 col-sm-3 col-xs-12">Ideal for
+                                                                        Position/Project</label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12"><?php
+                                                                        $param = $this->applicant->getIdealFor();
+                                                                        echo $this->escape($param == "" ? '-' : $param);
+                                                                        ?></div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-3 col-sm-3 col-xs-12">Possible
+                                                                        Starting Date</label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12"><?php
+                                                                        $param = $this->applicant->getStartingDate();
+                                                                        echo $this->escape($param == "" ? '-' : $param);
+                                                                        ?></div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-3 col-sm-3 col-xs-12">Form of
+                                                                        Contract</label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12"><?php
+                                                                        $param = $this->applicant->getContractForm();
+                                                                        echo $this->escape($param == "" ? '-' : $param);
+                                                                        ?></div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label class="col-md-3 col-sm-3 col-xs-12">Salary</label>
+                                                                    <div class="col-md-9 col-sm-9 col-xs-12"><?php
+                                                                        $param = $this->applicant->getSalary();
+                                                                        $currency = $this->applicant->getCurrency();
+                                                                        echo $this->escape($param == "" ? '-' : $param);
+                                                                        echo " (".$this->escape($currency == "" ? '-' : $currency).")";
+                                                                        ?></div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-default"
+                                                        data-dismiss="modal">Close</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Applicant's tests</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <form
+                            action="<?php
+                            echo $this->url(array(
+                                'controller' => 'applicant',
+                                'action' => 'assigntest',
+                                'id' => $this->applicant->getId()
+                                    ), 'default', true)
+                            ?>"
+                            method="post">
+
+
+                            <div class="form-group code-only">
+                                <label
+                                    class="control-label col-md-3 col-sm-3 col-xs-12 required"
+                                    for="test">Assign a test</label>
+                                <div class="col-md-7">
+                                    <select class="col-md-7 col-xs-1 form-control input" id="test"
+                                            name="test">
+
+                                        <?php
+                                        foreach ($this->tests as $test) {
+                                            ?><option
+                                                value="<?php echo $test->getId(); ?>"><?php echo $test->getName(); ?></option>
+                                                <?php
+                                            }
+                                            ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="submit" class="btn btn-primary submit"
+                                           value="Assign" id="submit" name="submit">
+                                </div>
+
+                            </div>
+
+                        </form>
+                        <hr />
+                        <div class="clearfix">
+                            <table id="tests"
+                                   class="table table-striped responsive-utilities jambo_table">
+                                <thead>
+                                    <tr class="headings">
+                                        <th>#</th>
+                                        <th>Test Name</th>
+                                        <th>Assigned By</th>
+                                        <th>Assigned At</th>
+                                        <th>Filled Out At</th>
+                                        <th>Score&nbsp;%</th>
+                                        <th>Status</th>
+                                        <th>URL</th>
+                                        <th class=" no-link last"><span class="nobr">Action</span>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    foreach ($this->sessionTests as $sessionTest) {
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $sessionTest->getId(); ?></td>
+                                            <td><?php echo $this->escape($sessionTest->getTest()->getName()); ?></td>
+                                            <td><?php echo $sessionTest->getAssignedBy(); ?></td>
+                                            <td><?php echo $sessionTest->getLastModifiedAt(); ?></td>
+                                            <td><?php echo $sessionTest->getCreatedAt() === '0000-00-00 00:00:00' ? '-' : $sessionTest->getCreatedAt(); ?></td>
+                                            <td><?php echo $this->formatScore($sessionTest->getScore()) ?></td>
+                                            <td><?php echo $this->escape($sessionTest->getStatus()); ?></td>
+                                            <td>
+                                                <button
+                                                    onclick="copyToClipboard(
+                                                                    'http://' + document.domain + '<?php
+                                                    echo $this->url(array(
+                                                        'controller' => 'publictest',
+                                                        'action' => 'index',
+                                                        'id' => $sessionTest->getHash()
+                                                            ), 'default', true)
+                                                    ?>')"
+                                                    class="btn btn-xs btn-warning" style="margin: 0px;">
+                                                    <i class="fa fa-copy"></i>&nbsp;&nbsp;Copy Link
+                                                </button>
+                                            </td>
+
+                                            <td class=" last"><a
+                                                    href="<?php
+                                                    echo $this->url(array(
+                                                        'controller' => 'publictest',
+                                                        'action' => 'edit',
+                                                        'id' => $sessionTest->getHash()
+                                                            ), 'default', true)
+                                                    ?>"
+                                                    class="btn btn-primary btn-xs" style="margin: 0px;"><i
+                                                        class="fa fa-eye"></i>&nbsp;&nbsp;
+                                                    <?php
+                                                    $states = array(
+                                                        "Assigned" => "Detail",
+                                                        "Started" => "See progress",
+                                                        "Submitted" => "Result",
+                                                        "Reviewed" => "Result"
+                                                    );
+                                                    echo $states [$this->escape($sessionTest->getStatus())];
+                                                    ?>
+                                                </a></td>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        var oTable = $('#tests').dataTable({
+            "columnDefs": [null, null, null, null, null,
+                {"type": "percent", targets: 3}
+            ],
+            "aaSorting": [[0, 'desc']],
+            "oLanguage": {
+                "sSearch": "Search all columns:"
+            },
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [8]
+                } //disables sorting for the last column (Action)
+            ],
+            'iDisplayLength': 12,
+            "sPaginationType": "full_numbers",
+        });
+        $("tfoot input").keyup(function () {
+            /* Filter on the column based on the index of this element's parent <th> */
+            oTable.fnFilter(this.value, $("tfoot th").index($(this).parent()));
+        });
+        $("tfoot input").each(function (i) {
+            asInitVals[i] = this.value;
+        });
+        $("tfoot input").focus(function () {
+            if (this.className == "search_init") {
+                this.className = "";
+                this.value = "";
+            }
+        });
+        $("tfoot input").blur(function (i) {
+            if (this.value == "") {
+                this.className = "search_init";
+                this.value = asInitVals[$("tfoot input").index(this)];
+            }
+        });
+    });
+
+    function copyToClipboard(text) {
+        window.prompt("Copy to clipboard:", text);
+    }
+</script>

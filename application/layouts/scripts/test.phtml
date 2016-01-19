@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <!-- Meta, title, CSS, favicons, etc. -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title><?php echo $this->title ?> | Interview.me</title>
+
+        <!-- Bootstrap core CSS -->
+
+        <?php 
+        
+        $this->headLink()->appendStylesheet($this->baseUrl() . '/css/bootstrap.min.css');
+        $this->headLink()->appendStylesheet($this->baseUrl() . '/fonts/css/font-awesome.min.css');
+        $this->headLink()->appendStylesheet($this->baseUrl() . '/css/animate.min.css');
+        $this->headLink()->appendStylesheet($this->baseUrl() . '/css/custom.css');
+        $this->headLink()->appendStylesheet($this->baseUrl() . '/css/maps/jquery-jvectormap-2.0.1.css');
+        $this->headLink()->appendStylesheet($this->baseUrl() . '/css/icheck/flat/green.css');
+        $this->headLink()->appendStylesheet($this->baseUrl() . '/css/floatexamples.css');
+        $this->headLink()->appendStylesheet($this->baseUrl() . '/css/prism.css');
+        //$this->headLink()->appendStylesheet('//cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css');
+            $this->headLink()->appendStylesheet('/css/datatables/tools/css/dataTables.tableTools.css');
+        
+        echo $this->headLink(); 
+        
+        $this->headScript()->appendFile($this->baseUrl() . '/js/jquery.min.js');
+        $this->headScript()->appendFile($this->baseUrl() . '/js/datatables/js/jquery.dataTables.js');
+        $this->headScript()->appendFile($this->baseUrl() . '/js/datatables/tools/js/dataTables.tableTools.js');
+        $this->headScript()->appendFile($this->baseUrl() . '/js/prism.js');
+        
+        echo $this->headScript(); ?>
+        
+        
+        <!--<script>
+            NProgress.start();
+        </script>-->
+
+        <!--[if lt IE 9]>
+            <script src="../assets/js/ie8-responsive-file-warning.js"></script>
+            <![endif]-->
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+              <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+              <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+            <![endif]-->
+
+    <style>
+        .right_col{
+            margin-left:0px !important;
+        }
+    </style>
+    </head>
+
+    <body class="nav-md">
+
+        <div class="container body">
+
+
+            <div class="main_container">
+
+                <!-- /top navigation -->
+
+                <!-- page content -->
+                <div class="right_col" role="main">
+
+                    <?php echo $this->layout()->content ?>
+
+                    <!-- footer content -->
+
+                    <footer>
+                        <div class="">
+                            <p class="pull-right">&copy; 2015 Tým 3 |
+                                <span class="lead"></i> Interview.me</span>
+                            </p>
+                        </div>
+                        <div class="clearfix"></div>
+                    </footer>
+                    <!-- /footer content -->
+                </div>
+                <!-- /page content -->
+
+            </div>
+
+        </div>
+
+        <div id="custom_notifications" class="custom-notifications dsp_none">
+            <ul class="list-unstyled notifications clearfix" data-tabbed_notifications="notif-group">
+            </ul>
+            <div class="clearfix"></div>
+            <div id="notif-group" class="tabbed_notifications"></div>
+        </div>
+
+        <script src="<?php echo $this->baseUrl(); ?>/js/bootstrap.min.js"></script>
+
+        <!-- bootstrap progress js -->
+        <script src="<?php echo $this->baseUrl(); ?>/js/progressbar/bootstrap-progressbar.min.js"></script>
+        <script src="<?php echo $this->baseUrl(); ?>/js/nicescroll/jquery.nicescroll.min.js"></script>
+        <!-- icheck -->
+        <script src="<?php echo $this->baseUrl(); ?>/js/icheck/icheck.min.js"></script>
+        <!-- daterangepicker -->
+        <script type="text/javascript" src="<?php echo $this->baseUrl(); ?>/js/moment.min.js"></script>
+        <script type="text/javascript" src="<?php echo $this->baseUrl(); ?>/js/datepicker/daterangepicker.js"></script>
+
+        <script src="<?php echo $this->baseUrl(); ?>/js/custom.js"></script>
+
+        <!-- /datepicker -->
+        <!-- /footer content -->
+    </body>
+
+</html>

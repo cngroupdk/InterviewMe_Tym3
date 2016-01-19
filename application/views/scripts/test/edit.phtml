@@ -1,0 +1,45 @@
+<div class="span12" id="content">
+
+    <div class="">
+        <div class="page-title">
+            <div class="title_left">
+                <h3><?php echo $this->escape($this->title); ?></h3>
+                <br/>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        
+        <div class="row">
+            <div class="col-md-9 col-sm-12 col-xs-12">
+                <a href="<?php
+                if (!empty($this->id)) {
+                    echo $this->url(array(
+                        'controller' => 'test',
+                        'action' => 'detail',
+                        'id' => $this->id), 'default', true);
+                } else {
+                    echo $this->url(array(
+                        'controller' => 'test'), 'default', true);
+                }
+                ?>" class="btn btn-default"><i class="fa fa-arrow-left"></i>&nbsp;Cancel</a>
+            </div>
+        </div>
+
+		<div class="row">
+	        <div class="col-md-9 col-sm-12 col-xs-12">
+	            <div class="x_panel">
+	                <div class="x_title">
+	                    <h2>Basic Information</h2>
+	                    <div class="clearfix"></div>
+	                </div>
+	                <div class="x_content">
+	                    <?php echo $this->form; ?>
+	                </div>
+	            </div>
+	        </div>
+	        <!-- /block -->
+	        <div class="clearfix"></div>
+        </div>
+    </div>
+    
+</div>

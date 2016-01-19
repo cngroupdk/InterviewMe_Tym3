@@ -1,0 +1,62 @@
+<div class="span12" id="content">
+
+    <h1>Applicants</h1>
+    <div class="row-fluid">
+        <!-- block -->
+        <div class="block">
+            <div class="navbar navbar-inner block-header">
+                <div class="muted pull-left"><?php echo $this->escape($this->title); ?></div>
+
+                <div class="pull-right"><a style="text-decoration: none;"href="<?php
+                    echo $this->url(
+                            array('controller' => 'applicant',
+                        'action' => 'edit'), 'default', true)
+                    ?>"><i class="icon-plus-sign"></i> Add New Applicant</a></div>
+
+            </div>
+            <div class="block-content collapse in">
+                <div class="span12">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Birth Number</th>
+                                <th>Street</th>
+                                <th>City</th>
+                                <th>Required Salary</th>
+                                <th>Seniority</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($this->applicants as $applicant) { ?>
+                                <tr>
+                                    <td><?php echo $this->escape($applicant->getId()); ?></td>
+                                    <td><?php echo $this->escape($applicant->getFirstName()); ?></td>
+                                    <td><?php echo $this->escape($applicant->getLastName()); ?></td>
+                                    <td><?php echo $this->escape($applicant->getBirthNumber()); ?></td>
+                                    <td><?php echo $this->escape($applicant->getStreet()); ?></td>
+                                    <td><?php echo $this->escape($applicant->getCity()); ?></td>
+                                    <td><?php echo $this->escape($applicant->getRequiredSalary()); ?></td>
+                                    <td><?php echo $this->escape($applicant->getSeniority()); ?></td>
+                                    <td><a href="<?php
+                                        echo $this->url(array(
+                                            'controller' => 'applicant',
+                                            'action' => 'edit',
+                                            'id' => $applicant->getId()), 'default', true)
+                                        ?>"><i class="icon-pencil" title="Edit Applicant"></i></a>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- /block -->
+    </div>
+
+
+</div>

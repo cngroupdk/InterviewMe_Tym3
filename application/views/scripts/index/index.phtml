@@ -1,0 +1,206 @@
+<!-- Z nějakého důvod nefunguje na produkci redirect v application.ini, proto přesměřování i zde -->
+<?php 
+	// http://stackoverflow.com/questions/15967644/zend-redirect-within-view-helper
+	/*$_redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
+	$_redirector->gotoUrl('/admin/login/'); 
+	exit();*/
+$technologyShareColors = array(
+    array("blue","#3498DB"),
+    array("green","#ED1848"),
+    array("purple","#9B59B6"),
+    array("aero","#9CC2CB"),
+    array("red","#E74C3C"),
+    array("dark","#34495E")
+);
+?>
+                <div class="row tile_count">
+                    <div class="animated flipInY col-md-2 col-sm-4 col-xs-4 tile_stats_count">
+                        <div class="left"></div>
+                        <div class="right">
+                            <span class="count_top"><i class="fa fa-user"></i> Total applicants</span>
+                            <div class="count"><?php echo $this->allApplicantCount; ?></div>
+                            <span class="count_bottom">&nbsp;</span>
+                        </div>
+                    </div>
+                    <div class="animated flipInY col-md-2 col-sm-4 col-xs-4 tile_stats_count">
+                        <div class="left"></div>
+                        <div class="right">
+                            <span class="count_top"><i class="fa fa-clock-o"></i> Hired applicants</span>
+                            <div class="count"><?php echo $this->hiredApplicantCount; ?></div>
+                            <span class="count_bottom"><i class="green"><?php echo $this->rejectedApplicantCount; ?> </i> rejected</span>
+                        </div>
+                    </div>
+                    <?php
+                    foreach($this->testsFilled as $testName=>$testCount){
+                        ?>
+                    <div class="animated flipInY col-md-2 col-sm-4 col-xs-4 tile_stats_count">
+                        <div class="left"></div>
+                        <div class="right">
+                            <span class="count_top"><i class="fa fa-edit"></i> <?php echo $this->escape($testName); ?></span>
+                            <div class="count"><?php echo $testCount; ?></div>
+                            <span class="count_bottom">&nbsp;</span>
+                            
+                        </div>
+                    </div>
+                    <?php
+                    }
+                    ?>
+                    
+                    
+
+                </div>
+                <!-- /top tiles -->
+                <div class="row">
+                     <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="x_panel tile">
+                            <div class="x_title">
+                                <h2>Applicants by result</h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <?php
+                                foreach($this->applicantsByResult as $applicantResult=>$applicantCount){
+                                    $progress = round(($applicantCount/($this->applicantsByResultTotalCount==0?1:$this->applicantsByResultTotalCount))*100);
+                                ?>
+                                <div class="widget_summary">
+                                    <div class="w_left w_25">
+                                        <span><?php echo $this->escape($applicantResult); ?></span>
+                                    </div>
+                                    <div class="w_center w_55">
+                                        <div class="progress">
+                                            <div class="progress-bar bg-green" role="progressbar" aria-valuenow="<?php echo $progress; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $progress; ?>%;">
+                                                <span class="sr-only"><?php echo $progress; ?>% Complete</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="w_right w_20">
+                                        <span><?php echo $applicantCount; ?></span>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <?php
+                                }
+                                ?>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="x_panel tile fixed_height_320 overflow_hidden">
+                            <div class="x_title">
+                                <h2>Applicants by technology</h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+
+                                <table style="width:100%" class="">
+                                    <tbody><tr>
+                                        <th style="width:37%;">
+                                            <p>Top 5</p>
+                                        </th>
+                                        <th>
+                                            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+                                                <p class="">Technology</p>
+                                            </div>
+                                            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5">
+                                                <p class="">Share</p>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <canvas style="margin: 15px 10px 10px 0px; width: 140px; height: 140px;" width="140" height="140" id="canvas1"></canvas>
+                                        </td>
+                                        <td>
+                                            <table class="tile_info">
+                                                <tbody>
+                                                     <?php
+                                                     $i = 0;
+                                foreach($this->applicantsByTechnology as $applicantTechnology=>$applicantCount){
+                                    $share = round(($applicantCount/($this->applicantsByTechnologyTotalCount==0?1:$this->applicantsByTechnologyTotalCount))*100);
+                                ?>
+                                                    <tr>
+                                                    <td>
+                                                        <p><i class="fa fa-square <?php echo $technologyShareColors[$i][0]; ?>"></i><?php echo $this->escape($applicantTechnology); ?> </p>
+                                                    </td>
+                                                    <td><?php echo $share; ?>%</td>
+                                                </tr>
+                                                  <?php
+                                                  $i++;
+                                }
+                                ?>
+                                               
+                                            </tbody></table>
+                                        </td>
+                                    </tr>
+                                </tbody></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                  <script>
+                      $(document).ready(function(){
+
+                            var doughnutData = [
+                                 <?php
+                                                     $i = 0;
+                                foreach($this->applicantsByTechnology as $applicantTechnology=>$applicantCount){
+                                ?><?php echo $i==0?"":",";?>{value: <?php echo $applicantCount; ?>,color: "<?php echo $technologyShareColors[$i][1]; ?>"}<?php
+                                                  $i++;
+                                }
+                                ?>
+                            ];
+                            var myDoughnut = new Chart(document.getElementById("canvas1").getContext("2d")).Doughnut(doughnutData);
+                      });
+    </script>
+    
+    
+                <div class="row">
+                     <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="x_panel tile">
+                            <div class="x_title">
+                                <h2>Top 10 tests by difficulty</h2>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <?php
+                                foreach($this->testsByScore as $testName=>$testResults){
+                                    $progress = round($testResults["average"]*100);
+                                ?>
+                                    <div class="widget_summary">
+                                        <div class="w_left w_25">
+                                            <span><?php echo $this->escape($testName); ?></span>
+                                        </div>
+                                        <div class="w_center w_55">
+                                            <div class="progress">
+                                                <div class="progress-bar bg-green" role="progressbar" aria-valuenow="<?php echo $progress; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $progress; ?>%;">
+                                                    <span class="sr-only"><?php echo $progess; ?>% Complete</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="w_right w_20">
+                                            <span><?php echo $progress; ?>% (<?php echo $testResults["count"]; ?>)</span>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                <?php
+                                
+                                }
+                                if($this->testsByScoreExtra>0){
+                                    
+                                                               ?>
+                                 <div class="widget_summary">
+                                        <div style="width:100%; text-align: center">
+                                            <span> <i>There are <?php echo $this->testsByScoreExtra; ?> more tests</i></span>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                 <?php
+                                }
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+    

@@ -1,0 +1,145 @@
+<div class="span12" id="content">
+    <div class="">
+    
+        <div class="page-title">
+            <div class="title_left">
+                <h3><?php echo $this->escape($this->test->getName()); ?></h3>
+                <br>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        
+     
+        <div class="row">
+        	<div class="col-md-12 col-sm-12 col-xs-12">
+        		<a href="<?php echo $this->url(
+                            array('controller' => 'test'), 'default', true)
+                    ?>" class="btn btn-default"><i class="fa fa-arrow-left"></i>&nbsp;Back</a>
+                       <?php if(Zend_Registry::get('ACL')->isAllowed(Zend_Registry::get('ROLE'), "test","delete")){ ?>
+                    <form style="margin: 0; padding: 0; display:inline;" action="<?php echo $this->url(
+					           array('controller' => 'test',
+					       	  'action' => 'delete',
+					       	  'id' => $this->test->getId()), 'default', true) ?>" method="post">
+					 <button  type="submit" class="btn btn-danger" 
+                        onclick="return confirm('Do you really want to delete this test?')" >
+                        <i class="fa fa-remove" title="Delete"></i>&nbsp;Delete</button></form>
+                        <?php } ?>
+            </div>
+        </div>
+        
+        
+        <div class="row">
+            <div class="col-md-9 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Basic Information</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+
+                        <div class="form-horizontal">
+
+                            <div class="form-group">
+                                <label class="col-md-3 col-sm-3 col-xs-12">Name</label>
+                                <div class="col-md-9 col-sm-9 col-xs-12"><?php echo $this->escape($this->test->getName()); ?></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 col-sm-3 col-xs-12">Description</label>
+                                <div class="col-md-9 col-sm-9 col-xs-12"><?php echo $this->escape($this->test->getDescription()); ?></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 col-sm-3 col-xs-12">Seniority</label>
+                                <div class="col-md-9 col-sm-9 col-xs-12"><?php echo $this->escape($this->test->getSeniority()); ?></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 col-sm-3 col-xs-12">Technology</label>
+                                <div class="col-md-9 col-sm-9 col-xs-12"><?php echo $this->escape($this->test->getTechnology()); ?></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 col-sm-3 col-xs-12">Position</label>
+                                <div class="col-md-9 col-sm-9 col-xs-12"><?php echo $this->escape($this->test->getPosition()); ?></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 col-sm-3 col-xs-12">Created At</label>
+                                <div class="col-md-9 col-sm-9 col-xs-12"><?php echo $this->escape($this->test->getCreatedAt()); ?></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 col-sm-3 col-xs-12">Last Modified At</label>
+                                <div class="col-md-9 col-sm-9 col-xs-12"><?php echo $this->escape($this->test->getLastModifiedAt()); ?></div>
+                            </div>
+
+                        </div>
+                    	<a href="<?php
+                    		echo $this->url(array(
+                        	'controller' => 'test',
+                        	'action' => 'edit',
+                        	'id' => $this->test->getId()), 'default', true)
+                    		?>" class="btn btn-primary"><i class="fa fa-edit "></i>&nbsp;Edit Information
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-9 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Questions and Answers</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <div class="form-horizontal">
+                            <?php
+                            $questions = $this->test->getCurrentQuestions();
+                     
+                                ?>
+                                <a href="<?php
+                                echo $this->url(array(
+                                    'controller' => 'testquestion',
+                                    'action' => 'index',
+                                    'id' => $this->test->getId()), 'default', true)
+                                ?>" class="btn btn-primary" style="margin-bottom: 20px;">
+                                    <i class="fa fa-edit"></i>&nbsp;Edit Questions
+                                </a>
+                                <?php
+                            if ((count($questions) > 0)) {
+                                $i = 0;
+                                foreach ($questions as $question) {
+                                    
+                                    echo '<div class="form-group" style="background-color: rgb(240, 240, 240); border: 1px solid rgb(210, 210, 210);">';
+                                    echo '<h4 style="margin: 5px 0px 10px 5px;"><b>' . ++$i . ') ' . $this->escape($question->getName()) . '</b></h4>';
+                                    echo '<p style="margin: 5px 0px 0px 15px;">' . $this->escape($question->getText()) . '</p>';
+                                    if ($question->getCode() != NULL) {
+                                        echo '<div style="margin: 5px 15px 15px 15px;"><pre><code class="language-' . $this->escape($question->getLanguage()) . '">' . $this->escape($question->getCode()) . '</code></pre></div>';
+                                    }
+                                    echo '<ul>';
+                                    foreach ($question->getAnswers() as $answer) {
+                                        if ($answer->isCorrect) {
+                                            echo '<li style="list-style-type: lower-alpha; color: green;"><b>' . $this->escape($answer->getText()) . '</b></li>';
+                                        } else {
+                                            echo '<li style="list-style-type: lower-alpha;">' . $this->escape($answer->getText()) . '</li>';
+                                        }
+                                    }
+                                    echo '</ul>';
+                                    echo '</div>';
+                                }
+                            } else {
+                                echo '<p>No questions.</p>';
+                            }
+                            ?>
+                        </div>
+                           <a href="<?php
+						         echo $this->url(array(
+						         'controller' => 'testquestion',
+						         'action' => 'index',
+						         'id' => $this->test->getId()), 'default', true)
+						   ?>" class="btn btn-primary"><i class="fa fa-edit "></i>&nbsp;Edit Questions
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>       

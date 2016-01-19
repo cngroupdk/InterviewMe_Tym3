@@ -1,0 +1,58 @@
+<div class="row">
+
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>List of Applicants</h2>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+
+                <table class="table" id="applicants">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Birth Year</th>
+                            <th>Applies For</th>
+                            <th>Created At</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        foreach ($this->applicants as $applicant) {
+                            ?>
+                            <tr>
+                                <th scope="row"><?php echo $applicant->getId(); ?></th>
+                                <td><?php echo $this->escape($applicant->getText()); ?></td>
+                                <td><?php echo $this->escape($applicant->getType()); ?></td>
+                                <td><a href="<?php
+                                    echo $this->url(array(
+                                        'controller' => 'testquestion',
+                                        'action' => 'editTestQuestion',
+                                        'id' => $applicant->getId()), 'default', true);
+                                    ?>">Upravit</a>
+                                    | <a href="<?php
+                                    echo $this->url(array(
+                                        'controller' => 'testquestion',
+                                        'action' => 'deleteTestQuestion',
+                                        'id' => $applicant->getId()), 'default', true);
+                                    ?>">Smazat</a></td>
+                            </tr>
+
+                        <?php } ?>
+
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#applicants').DataTable();
+    });
+</script>
